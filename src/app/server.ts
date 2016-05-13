@@ -1,19 +1,19 @@
-import {ToDo, IToDo} from'./todo';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import {ToDos} from './todos';
 
-var todos:IToDo[] = [];
+var users = [{
+    userName: "Admin",
+    password: "Admin",
+    displayName: "Mr Admin",
+    id: "30453856-f626-4786-bae4-a9d151cc19b1"
+}];
 
 var app = module.exports.app = exports.app = express();
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var port = process.env.PORT || 8080;
 var host = `http://localhost:${port}`;
-var urls = {
-    post: '/session/create'
-};
 
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -28,12 +28,30 @@ var router = express.Router();
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
-    res.json(urls);
+    res.json('Hello World');
 });
 
-router.route(urls.post)
+router.route('/session/create')
     .post(function (req, res) {
-        res.json({"token": "0f3a641f-1e0c-4498-936f-b9ab14ab7f6a"});
+        let found;
+        users.map((user) => {
+            if (user.userName === req.params.userName &&
+                user.password === req.params.password) {
+                found = user;
+            }
+        });
+        if (found) {
+            res.json({
+                "token": "0f3a641f-1e0c-4498-936f-b9ab14ab7f6a",
+                "userName": found.userName,
+                "id": found.username,
+                "displayName": found.displayName
+            });
+        } else {
+            res.status(404);
+        }
+
+
     });
 
 
