@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
 var users = [{
-    userName: "Admin",
+    username: "Admin",
     password: "Admin",
     displayName: "Mr Admin",
     id: "30453856-f626-4786-bae4-a9d151cc19b1"
@@ -34,21 +34,23 @@ router.get('/', function (req, res) {
 router.route('/session/create')
     .post(function (req, res) {
         let found;
+        
         users.map((user) => {
-            if (user.userName === req.params.userName &&
-                user.password === req.params.password) {
+            console.log(req.body);
+            if (user.username === req.body.username &&
+                user.password === req.body.password) {
                 found = user;
             }
         });
         if (found) {
             res.json({
                 "token": "0f3a641f-1e0c-4498-936f-b9ab14ab7f6a",
-                "userName": found.userName,
-                "id": found.username,
+                "userName": found.username,
+                "id": found.id,
                 "displayName": found.displayName
             });
         } else {
-            res.status(404);
+            res.status(404).send('Not found');
         }
 
 
